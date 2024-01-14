@@ -2,6 +2,12 @@ name: "Lint"
 
 on:
   workflow_call:
+    inputs:
+      app_folder_path:
+        description: "App Folder Path"
+        required: false
+        default: "APP"
+        type: string
 
     
 jobs:
@@ -22,12 +28,6 @@ jobs:
       - uses: psf/black@stable
       - uses: jpetrucciani/bandit-check@main
         with:
-          path: $APP_FOLDER_PATH
+          path: ${{ inputs.app_folder_path }}
           bandit_flags: '-lll -o output.json -f json'
-
-  # sonarcloud:
-  #   name: SonarCloud scanner
-  #   uses: sonarsource/sonarcloud-github-action@master
-  #   env:
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}      
+   

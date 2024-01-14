@@ -8,15 +8,10 @@ on:
         required: false
         default: "dev"
         type: string
-      app_folder_path:
-        description: "App Folder Path"
-        required: false
-        default: "APP"
-        type: string
       function_name:
-        description: "Function Name"
+        description: "Lambda Function Name"
         required: false
-        default: "whatsapp_webhook"
+        default: "lambda_name"
         type: string
     secrets:
       AWS_ACCESS_KEY_ID:

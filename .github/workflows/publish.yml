@@ -57,17 +57,17 @@ jobs:
         echo "version-number=$(cat update_function_response.json | jq -r '.Version')" >> $GITHUB_ENV
 
 
-    - name: Deploy to Lambda
-      run: |
-        echo ${{env.version-number}} 
-        ( aws lambda get-alias \
-          --function-name ${{inputs.function_name}} \
-          --name ${{inputs.environment}} && 
-          aws lambda update-alias \
-          --function-name ${{inputs.function_name}} \
-          --name ${{inputs.environment}} \
-          --function-version ${{env.version-number}} )|| 
-          aws lambda create-alias \
-            --function-name ${{inputs.function_name}} \
-            --name ${{inputs.environment}} \
-            --function-version ${{env.version-number}} 
+    # - name: Deploy to Lambda
+    #   run: |
+    #     echo ${{env.version-number}} 
+    #     ( aws lambda get-alias \
+    #       --function-name ${{inputs.function_name}} \
+    #       --name ${{inputs.environment}} && 
+    #       aws lambda update-alias \
+    #       --function-name ${{inputs.function_name}} \
+    #       --name ${{inputs.environment}} \
+    #       --function-version ${{env.version-number}} )|| 
+    #       aws lambda create-alias \
+    #         --function-name ${{inputs.function_name}} \
+    #         --name ${{inputs.environment}} \
+    #         --function-version ${{env.version-number}} 

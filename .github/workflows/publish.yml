@@ -1,0 +1,78 @@
+name: "Build"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "Environment"
+        required: false
+        default: "dev"
+        type: string
+      app_folder_path:
+        description: "App Folder Path"
+        required: false
+        default: "APP"
+        type: string
+      function_name:
+        description: "Function Name"
+        required: false
+        default: "whatsapp_webhook"
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        description: "AWS Access Key ID"
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        description: "AWS Secret Access Key"
+        required: true
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse inputs
+        run: echo "${{ toJSON(inputs) }}"
+      - name: Parse env
+        run: echo "${{ toJSON(env) }}"
+      - name: Parse context 
+        run: echo "${{ toJSON(github) }}"     
+
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: python-app        
+        path: ./
+
+    - name: Debug
+      run: ls -la
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Publish Version
+      run: |
+        aws lambda update-function-code --publish --function-name=${{inputs.function_name}} --zip-file=fileb://python_app.zip > update_function_response.json
+        echo "version-number=$(cat update_function_response.json | jq -r '.Version')" >> $GITHUB_ENV
+
+
+    - name: Deploy to Lambda
+      run: |
+        echo ${{env.version-number}} 
+        ( aws lambda get-alias \
+          --function-name ${{inputs.function_name}} \
+          --name ${{inputs.environment}} && 
+          aws lambda update-alias \
+          --function-name ${{inputs.function_name}} \
+          --name ${{inputs.environment}} \
+          --function-version ${{env.version-number}} )|| 
+          aws lambda create-alias \
+            --function-name ${{inputs.function_name}} \
+            --name ${{inputs.environment}} \
+            --function-version ${{env.version-number}} 

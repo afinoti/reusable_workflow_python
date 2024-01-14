@@ -1,0 +1,33 @@
+name: "Lint"
+
+on:
+  workflow_call:
+
+    
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse inputs
+        run: echo "${{ toJSON(github.event.inputs) }}"
+      - name: Parse env
+        run: echo "${{ toJSON(env) }}"
+      - name: Parse context
+        run: echo "${{ toJSON(github) }}"          
+  lint:
+    name: Lint Black
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+      - uses: jpetrucciani/bandit-check@main
+        with:
+          path: $APP_FOLDER_PATH
+          bandit_flags: '-lll -o output.json -f json'
+
+  # sonarcloud:
+  #   name: SonarCloud scanner
+  #   uses: sonarsource/sonarcloud-github-action@master
+  #   env:
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}      

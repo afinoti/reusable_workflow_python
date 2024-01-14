@@ -1,4 +1,4 @@
-name: "Build"
+name: "Publish Lambda Function"
 
 on:
   workflow_call:
@@ -13,6 +13,10 @@ on:
         required: false
         default: "lambda_name"
         type: string
+    outputs:
+      version-number:
+        description: "Version Number"
+        value: ${{ jobs.publish.outputs.version-number }}
     secrets:
       AWS_ACCESS_KEY_ID:
         description: "AWS Access Key ID"
@@ -35,6 +39,8 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    outputs:
+      version-number: ${{ steps.publish.outputs.version-number }}
     steps:
     - uses: actions/download-artifact@v3
       with:
@@ -52,9 +58,10 @@ jobs:
         aws-region: us-east-1
 
     - name: Publish Version
+      id: publish
       run: |
         aws lambda update-function-code --publish --function-name=${{inputs.function_name}} --zip-file=fileb://python_app.zip > update_function_response.json
-        echo "version-number=$(cat update_function_response.json | jq -r '.Version')" >> $GITHUB_ENV
+        echo "version-number=$(cat update_function_response.json | jq -r '.Version')" >> $GITHUB_OUTPUT
 
 
     # - name: Deploy to Lambda

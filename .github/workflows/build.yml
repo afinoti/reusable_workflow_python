@@ -16,14 +16,17 @@ on:
 
 jobs:
   debug:
+    name: Debug
     runs-on: ubuntu-latest
     steps:
       - name: Parse inputs
-        run: echo "${{ toJSON(github.event.inputs) }}"
+        run: echo "${{ toJSON(inputs) }}"
       - name: Parse env
         run: echo "${{ toJSON(env) }}"
       - name: Parse context 
         run: echo "${{ toJSON(github) }}"     
+      - name: Parse payload  
+        run: echo ${{ github.event.client_payload.body }}
 
   build:
     name: Build and Package

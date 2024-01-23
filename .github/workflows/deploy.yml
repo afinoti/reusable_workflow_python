@@ -28,7 +28,6 @@ on:
 
 jobs:
   debug:
-    if:  runner.debug == '1'
     runs-on: ubuntu-latest
     steps:
       - name: Parse inputs

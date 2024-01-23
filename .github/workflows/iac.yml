@@ -50,7 +50,7 @@ jobs:
 
       - name: Terraform Format
         id: fmt
-        run: terraform fmt -check
+        run: terraform fmt -check 
 
       - name: Terraform Init
         id: init
@@ -58,11 +58,11 @@ jobs:
       
       - name: Terraform Validate
         id: validate
-        run: terraform validate -no-color
+        run: terraform validate -no-color -var-file="tfvars/${{ inputs.environment }}.tfvars"
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color
+        run: terraform plan -no-color -var-file="tfvars/${{ inputs.environment }}.tfvars"
         continue-on-error: true
 
       - name: Terraform Plan Status
@@ -70,4 +70,4 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var-file="tfvars/${{ inputs.environment }}.tfvars"

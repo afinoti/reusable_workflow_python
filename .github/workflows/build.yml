@@ -1,0 +1,65 @@
+name: "Build"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "Environment"
+        required: false
+        default: "dev"
+        type: string
+      app_folder_path:
+        description: "App Folder Path"
+        required: false
+        default: "APP"
+        type: string
+
+jobs:
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse inputs
+        run: echo "${{ toJSON(inputs) }}"
+      - name: Parse env
+        run: echo "${{ toJSON(env) }}"
+      - name: Parse context 
+        run: echo "${{ toJSON(github) }}"     
+      - name: Parse payload  
+        run: echo ${{ github.event.client_payload.body }}
+
+  build:
+    name: Build and Package
+    runs-on: ubuntu-latest    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    - name: Pip install
+      run: |
+        cd ${{inputs.app_folder_path}}
+        ls -la
+        
+        # rm -rf tests || true
+
+        pip install  \
+          --platform manylinux2014_x86_64     \
+          --target=.    \
+          --implementation cp  \
+          --python-version 3.9 \
+          --only-binary=:all: \
+          --upgrade \
+          -r requirements.txt 
+
+        ls -la
+        zip -r ../python_app.zip ./*
+        cd ..
+        ls -la
+    - uses: actions/upload-artifact@v3
+      with:
+        name: python-app
+        path: python_app.zip    
+

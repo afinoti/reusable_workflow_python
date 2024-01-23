@@ -1,0 +1,53 @@
+name: "Build"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "Environment"
+        required: false
+        default: "dev"
+        type: string
+      app_folder_path:
+        description: "App Folder Path"
+        required: false
+        default: "APP"
+        type: string
+
+jobs:
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse inputs
+        run: echo "${{ toJSON(github.event.inputs) }}"
+      - name: Parse env
+        run: echo "${{ toJSON(env) }}"
+      - name: Parse context 
+        run: echo "${{ toJSON(github) }}"     
+
+  build:
+    name: Build and Package
+    runs-on: ubuntu-latest    
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: python-app     
+        path: ./
+    - name: Pip install
+      run: |
+        ls -la
+
+        unzip python_app.zip
+        ls -la
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+    - name: Unittest
+      run: |
+        ls -la
+        python -m unittest discover -s tests -p '*_test.py'
+
+
+

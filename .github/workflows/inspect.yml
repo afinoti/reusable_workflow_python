@@ -1,0 +1,34 @@
+name: "Lint"
+
+on:
+  workflow_call:
+    inputs:
+      app_folder_path:
+        description: "App Folder Path"
+        required: false
+        default: "APP"
+        type: string
+
+    
+jobs:
+  debug:
+    name: Debug
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse inputs
+        run: echo "${{ toJSON(github.event.inputs) }}"
+      - name: Parse env
+        run: echo "${{ toJSON(env) }}"
+      - name: Parse context
+        run: echo "${{ toJSON(github) }}"          
+  lint:
+    name: Lint Black
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
+      - uses: jpetrucciani/bandit-check@main
+        with:
+          path: ${{ inputs.app_folder_path }}
+          bandit_flags: '-lll -o output.json -f json'
+   

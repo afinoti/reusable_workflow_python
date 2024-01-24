@@ -13,13 +13,20 @@ on:
         required: false
         default: "IAC"
         type: string
+      tf_workspace:
+        description: "Workspace"
+        required: false
+        default: "default"
+        type: string
     secrets:
       TF_API_TOKEN:
         description: "Terraform Cloud API Token"
         required: true
-
+env:
+  TF_WORKSPACE: "${{ inputs.tf_workspace }}"
 
 jobs:
+
   debug:
     name: Debug
     runs-on: ubuntu-latest
@@ -55,7 +62,7 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init
-      
+
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color

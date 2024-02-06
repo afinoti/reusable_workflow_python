@@ -13,6 +13,11 @@ on:
         required: false
         default: "APP"
         type: string
+      retation_days:
+        description: "Retention Days"
+        required: false
+        default: 3
+        type: string
 
 jobs:
   debug:
@@ -61,5 +66,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: python-app
-        path: python_app.zip    
+        path: python_app.zip
+        retention-days: ${{inputs.retation_days}}
+
 

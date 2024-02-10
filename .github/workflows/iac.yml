@@ -28,7 +28,7 @@ env:
 jobs:
 
   debug:
-    if: runner.debug == '1'
+    if: ( ${{ secrets.ACTIONS_RUNNER_DEBUG || vars.ACTIONS_RUNNER_DEBUG || secrets.ACTIONS_STEP_DEBUG || vars.ACTIONS_STEP_DEBUG || false }} == 'true' )
     name: Debug
     runs-on: ubuntu-latest
     steps:

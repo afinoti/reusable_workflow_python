@@ -12,7 +12,7 @@ on:
     
 jobs:
   debug:
-    if: ( ${{ secrets.ACTIONS_RUNNER_DEBUG || vars.ACTIONS_RUNNER_DEBUG || secrets.ACTIONS_STEP_DEBUG || vars.ACTIONS_STEP_DEBUG || false }} == 'true' )
+    if: ( secrets.ACTIONS_RUNNER_DEBUG || vars.ACTIONS_RUNNER_DEBUG || secrets.ACTIONS_STEP_DEBUG || vars.ACTIONS_STEP_DEBUG || false )
     name: Debug
     runs-on: ubuntu-latest
     steps:

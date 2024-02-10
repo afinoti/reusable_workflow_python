@@ -12,6 +12,7 @@ on:
     
 jobs:
   debug:
+    if: runner.debug == '1'
     name: Debug
     runs-on: ubuntu-latest
     steps:

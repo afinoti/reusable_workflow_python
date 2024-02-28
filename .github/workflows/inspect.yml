@@ -32,9 +32,9 @@ jobs:
         with:
           path: ${{ inputs.app_folder_path }}
           bandit_flags: '-lll -o bandit_output.json -f json'
-      - name: Upload Bandit Output
-        uses: actions/upload-artifact@v2
-        with:
-          name: bandit_output
-          path: bandit_output.json
+      # - name: Upload Bandit Output
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: bandit_output
+      #     path: bandit_output.json
    

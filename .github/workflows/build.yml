@@ -17,7 +17,7 @@ on:
         description: "Retention Days"
         required: false
         default: 3
-        type: string
+        type: number
 
 jobs:
   debug:
